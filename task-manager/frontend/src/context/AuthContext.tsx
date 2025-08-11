@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { api, setAccessToken } from '../services/api';
+import { api, setAccessToken, tryRefreshOnStart } from '../services/api';
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -11,12 +11,13 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('accessToken'));
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    setAccessToken(token);
-    setIsAuthenticated(!!token);
+    (async () => {
+      const token = await tryRefreshOnStart();
+      setIsAuthenticated(!!token);
+    })();
   }, []);
 
   async function login(email: string, password: string) {
