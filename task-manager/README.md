@@ -18,6 +18,14 @@ npm run dev
 ```
 
 ### Backend
+
+#### Backend (development)
+```bash
+cd backend
+npm install
+npm run dev
+```
+
 ```bash
 cd backend
 npm install

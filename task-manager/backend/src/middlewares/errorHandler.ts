@@ -1,0 +1,1 @@
+import { Request, Response, NextFunction } from 'express';\n\nexport function errorHandler(\n  err: unknown,\n  _req: Request,\n  res: Response,\n  _next: NextFunction\n): void {\n  // eslint-disable-next-line no-console\n  console.error(err);\n  res.status(500).json({ ok: false, error: 'Internal Server Error' });\n}\n
