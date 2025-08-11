@@ -10,7 +10,7 @@ export interface EmailService {
 
 export class NodemailerEmailService implements EmailService {
   async send(payload: EmailPayload): Promise<void> {
-    const nodemailer = await import('nodemailer');
+    const nodemailer = (await import('nodemailer')).default as unknown as typeof import('nodemailer');
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT || 587),
@@ -23,7 +23,8 @@ export class NodemailerEmailService implements EmailService {
 
 export class SendGridEmailService implements EmailService {
   async send(payload: EmailPayload): Promise<void> {
-    const sg = await import('@sendgrid/mail');
+    const sgMod = await import('@sendgrid/mail');
+    const sg = (sgMod as any).default || sgMod;
     sg.setApiKey(process.env.SENDGRID_API_KEY || '');
     await sg.send({ from: process.env.MAIL_FROM || 'no-reply@example.com', to: payload.to, subject: payload.subject, html: payload.html } as any);
   }
